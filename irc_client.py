@@ -1,4 +1,5 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
+
 """
 .....................IRC-client.........................
 
@@ -6,179 +7,209 @@
 
 """
 
-
-import socket, ssl
+import socket
+import threading
 import tkinter as tk
-from tkinter import *
+from tkinter import StringVar
+from tkinter import messagebox as mb
 
 
-LARGE_FONT= ("Verdana", 12)
-server = "irc.freenode.net"  # Server
-port = 7000  # Port
-channel = "#menlug"  # Channel
-nickname = "lordmaibi"
-
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+def _channel_(channel):
+    if channel.startswith("#") is False and channel.startswith("!") is False:
+        return "#" + channel
+    return channel
 
 
-def connectT():
-    global s
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((server, port))
-
-ircsock = ssl.wrap_socket(s)
-
-
-def joinchannel(chan):
-    ircsock.send(("JOIN " + chan + "\n").encode())
+# helper
+def print_response():
+    resp = client.get_response()
+    if resp:
+        msg = resp.strip().split(":")
+        print("< {}> {}".format(msg[1].split("!")[0], msg[2].strip()))
 
 
-# joinchannel(channel)
+class MyClient:
 
-def auth(nick):
-    connectT()
-    global ircsock
-    ircsock = ssl.wrap_socket(s)
-    ircsock.send(("USER " + nick + " " + nick + " " + nick + " hi \n").encode())  # user authentication
-    ircsock.send(("NICK " + nick + "\n").encode())  # assign the nickname to the client
+    def __init__(self, username, channel,
+                 server="irc.freenode.net", port=6667):
+        self.username = username
+        self.server = server
+        self.port = port
+        self.channel = channel
 
+    @property
+    def _username(self):
+        return self.username
 
+    @_username.setter
+    def _username(self, value):
+        self.username = value
 
-def ping():
-    ircsock.send("PONG :pingis\n")
+    @property
+    def _channel(self):
+        return self.channel
 
+    @_channel.setter
+    def _channel(self, value):
+        self.channel = value
 
-def sendmsg(chan , msg):
-    ircsock.send("PRIVMSG " + chan + " :" + msg + "\n")
+    def connect(self):
+        self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.conn.connect((self.server, self.port))
 
+    def get_response(self):
+        return self.conn.recv(512).decode("utf-8")
 
-def hello():
-    ircsock.send("PRIVMSG " + channel + " :Hello!\n")
+    def send_command(self, command, message):
+        command = "{} {}\r\n".format(command, message).encode("utf-8")
+        self.conn.send(command)
 
+    def sendMsg(self, message):
+        command = "PRIVMSG {}".format(self.channel)
+        message = ":" + message
+        self.send_command(command, message)
 
-class irc_client():
-    pass
-
-class SeaofBTCapp(tk.Tk):
-
-    def __init__(self, *args, **kwargs):
-
-        tk.Tk.__init__(self, *args, **kwargs)
-        container = tk.Frame(self)
-
-        container.configure(background="light green")
-        container.configure(width=400, height=400)
-        container.pack(side="top", fill="both", expand = True)
-
-        container.grid_rowconfigure(0, weight=100)
-        container.grid_columnconfigure(0, weight=10)
-
-        self.frames = {}
-
-        for F in (StartPage, PageOne, PageTwo):
-
-            frame = F(container, self)
-
-            self.frames[F] = frame
-
-            frame.grid(row=0, column=0, sticky="nsew")
-
-        self.show_frame(StartPage)
-
-    def show_frame(self, cont):
-
-        frame = self.frames[cont]
-        frame.configure(background="light green")
-        frame.configure(width=400, height=400)
-        frame.tkraise()
+    def join_channel(self):
+        command = "JOIN"
+        channel = self.channel
+        self.send_command(command, channel)
 
 
-class StartPage(tk.Frame):
+if __name__ == "__main__":
+    window = tk.Tk()
+    window.geometry("520x640")
+    window.title(" Internet Relay Chat (IRC) client ")
+    label = tk.Label(text="Welcome to Radebe-IRC")
+    descrp = "Type your username and channel to join. channel must start with#"
+    ds = tk.Label(text=descrp, bd=5)
+    label.pack(pady=30, padx=30)
+    ds.pack(pady=30, padx=30)
+    _nickname = StringVar()
+    _channel = StringVar()
+    _cmd = StringVar()
+    label.pack(pady=30, padx=30)
 
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self,parent)
-        _nickname = StringVar()
-        label = tk.Label(self, text="Welcome to Radebe-IRC", font=LARGE_FONT)
-        label.pack(pady=30,padx=30)
+    username = ""
+    channel = ""
+    command = ""
+    client = MyClient(username, channel)
+    _msg = StringVar()
 
-        label1 = tk.Label(self, text="Enter nickname to ", font=LARGE_FONT)
-        label1.pack(pady=10,padx=10)
+    lbl_nickname = tk.Label(text='Nickname:')
+    lbl_nickname.pack(pady=10, padx=10)
+    ent_nickname = tk.Entry(textvariable=_nickname)
+    ent_nickname.pack(pady=10, padx=10)
 
-        lbl_nickname = tk.Label(self, text='Nickname:', font=LARGE_FONT)
-        lbl_nickname.pack(pady=10,padx=10)
-        ent_nickname = tk.Entry(self, textvariable=_nickname)
-        ent_nickname.pack(pady=10,padx=10)
+    lbl_nickname = tk.Label(text='Channel:')
+    lbl_nickname.pack(pady=10, padx=10)
+    ent_channel = tk.Entry(textvariable=_channel)
+    ent_channel.pack(pady=10, padx=30)
 
-        button = tk.Button(self, text="Connect to freenode server",
-                            command=lambda: controller.show_frame(PageOne))
-        button.bind("<Button-1>", auth(str(_nickname)))
+    button = tk.Button(window, text="Join the channel",
+                       command=lambda: threading.Thread(target=go()))
+    exitB = tk.Button(window, text="Exit",
+                      command=lambda: threading.Thread(ExitApplication()))
+    inf = "To send message type "
+    info = tk.Label(text='Channel:')
+    button.pack()
+    exitB.pack()
+
+    def set_cmd():
+        global command
+        # ck = False
+        # threading.Thread(irc_command(ck, username))
+        command = _msg.get()
+        print(command)
+        _command(command)
+
+    def new_winF():  # new window
+        newwin = tk.Toplevel(window)
+        newwin.geometry("420x440")
+        newwin.focus_set()
+        newwin.title(" Internet Relay Chat")
+        m_lbl = tk.Label(newwin, text="Send message to the channel")
+        m_lbl.pack(pady=10, padx=30)
+        msg = tk.Entry(newwin, textvariable=_msg)
+        msg.pack(pady=10, padx=30)
+        global client
+
+        button = tk.Button(newwin, text="send", command=lambda: threading.
+                           Thread(set_cmd()))
+        leave = tk.Button(newwin, text="leave channel",
+                          command=lambda: threading.
+                          Thread(_command("/quit")))
         button.pack()
-        # ircmsg = ircsock.recv(2048)  # receive data from the server
-        # ircmsg = ircmsg.strip(('\n\r').encode())
-        msg = tk.Message(self, text="Connecting to " + server)
-        msg.pack()
+        leave.pack()
 
-        button2 = tk.Button(self, text="Exit",
-                            command=lambda: controller.show_frame(PageTwo))
-        button2.pack()
+    def errorMsg():
+        mb.showerror("Error", "Enter your username and the channel")
 
+    def ExitApplication():
+        MsgBox = tk.messagebox.askquestion("Exit Application",
+                                           "Exit the application?",
+                                           icon="warning")
+        if MsgBox == 'yes':
+            window.destroy()
+            exit(0)
 
-class PageOne(tk.Frame):
+    def go():
+        global username, channel
+        username = _nickname.get()
+        channel = _channel.get()
+        global command
+        command = ""
+        joined = False
 
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
+        client._username = username
+        client._channel = channel
+        client.connect()
+        if not username and not channel or channel[0] != '#':
+            threading.Thread(target=errorMsg())
+            # exit(0)
+        else:
+            username = _nickname.get()
+            channel = _channel.get()
+            threading.Thread(new_winF())
+            threading.Thread(target=irc_command(joined, username))
+            threading.Thread(target=_command(command))
 
-        _channel = StringVar()
+    def irc_command(check, username):
+        while(check is False):
+            resp = client.get_response()
+            print(resp.strip())
+            if "No Ident response" in resp:
+                client.send_command("NICK", username)
+                client.send_command(
+                    "USER", "{} * * :{}".format(username, username))
 
-        lbl_channel = tk.Label(self, text='channel:', font=LARGE_FONT)
-        lbl_channel.pack(pady=10,padx=10)
-        ent_channel = tk.Entry(self, textvariable=_channel)
-        ent_channel.pack(pady=10,padx=10)
+            # join the channel!
+            if "376" in resp:
+                client.join_channel()
 
-        button1 = tk.Button(self, text="Join channel",
-                            command=lambda: controller.show_frame(PageTwo))
-        button1.bind("<Button-1>",joinchannel(str(_channel)))
-        button1.pack()
+            # username already in use? try to use username with _
+            if "433" in resp:
+                username = "_" + username
+                client.send_command("NICK", username)
+                client.send_command(
+                    "USER", "{} * * :{}".format(username, username))
 
-        button2 = tk.Button(self, text="Back to Home",
-                            command=lambda: controller.show_frame(PageOne))
-        button2.pack()
+            # if PING send PONG with name of the server
+            if "PING" in resp:
+                client.send_command("PONG", ":" + resp.split(":")[1])
 
+            # joined
+            if "366" in resp:
+                check = True
 
-class PageTwo(tk.Frame):
+    def _command(cmd):
+        while(cmd != "/quit"):
+            cmd = input("< {}> ".format(username)).strip()
+            if cmd == "/quit":
+                client.send_command("QUIT", "до свидания!")
+            client.sendMsg(cmd)
 
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
+            response_thread = threading.Thread(target=print_response)
+            response_thread.daemon = True
+            response_thread.start()
 
-
-        button1 = tk.Button(self, text="Join channel",
-                            command=lambda: controller.show_frame(StartPage))
-        button1.pack()
-
-        button2 = tk.Button(self, text="Back to Home",
-                            command=lambda: controller.show_frame(PageOne))
-        button2.pack()
-
-
-
-app = SeaofBTCapp()
-while 1:
-    ircmsg = ircsock.recv(2048)  # receive data from the server
-    ircmsg = ircmsg.strip(('\n\r').encode())  # removing any unnecessary linebreaks.
-    print(ircmsg)  # print what's coming from the server
-
-    print("Send message to " + channel)
-    mssg = str(input())
-    ircsock.send(mssg.encode())
-
-if ircmsg.find(":Hello " + nickname) != -1: # reply to message
-    # hello()
-    print("Send message to " + channel)
-    mssg = str(input())
-    ircsock.send(mssg.encode())
-
-if ircmsg.find("PING :") != -1:  # respond to server's ping
-    ping()
-app.mainloop()
-
-# joinchannel(channel)  # Join the channel using the functions previously defined
+    window.mainloop()
