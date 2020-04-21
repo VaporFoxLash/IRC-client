@@ -9,9 +9,8 @@ These clients communicate with chat servers to transfer messages to other client
 [3] as well as chat and data transfer,
 [4] including file sharing.
 
-+--------------------------------------------------Ussage:----------------------------------------------------------------------+
-+
-+  Run irc_client.py, a GUI will pop up, enter your username and channel you want to join in freenode server.                   +
-+  When the second window pops up enter the message and hit ente to sen the message or hit leave channel to exit the channel.   +
-+
-+-------------------------------------------------------------------------------------------------------------------------------+
++--------------------------------------------------Ussage:-------------------------------------------------------------------+
++                                                                                                                            +
++  Run irc_client.py, a GUI will pop up, enter your username and channel you want to join in freenode server.                +
++  When the second window pops up enter the message and hit ente to sen the message or hit leave channel to exit the channel.+  +                                                                                                                            +
++----------------------------------------------------------------------------------------------------------------------------+
