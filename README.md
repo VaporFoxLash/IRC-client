@@ -1,4 +1,5 @@
 # IRC-client
+
 Internet Relay Chat (IRC) is an application layer protocol that facilitates communication in the form of text. 
 The chat process works on a client/server networking model. 
 IRC clients are computer programs that users can install on their system or web based applications 
@@ -10,8 +11,8 @@ These clients communicate with chat servers to transfer messages to other client
 [4] including file sharing.
 
 +--------------------------------------------------Ussage:----------------------------------------------------------------------+
-+
++                                                                                                                               +
 +  Run irc_client.py, a GUI will pop up, enter your username and channel you want to join in freenode server.                   +
 +  When the second window pops up enter the message and hit ente to sen the message or hit leave channel to exit the channel.   +
-+
++                                                                                                                               +
 +-------------------------------------------------------------------------------------------------------------------------------+
