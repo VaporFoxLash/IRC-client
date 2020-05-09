@@ -13,6 +13,7 @@ These clients communicate with chat servers to transfer messages to other client
 * [Installation](#Install)
 * [Usage](#Usage)
 * [Screen Shots](#Shots)
+* [Prerequisites](#Prerequisites)
 
 ## <a name="Install">Installation</a>
 * To clone the repo
