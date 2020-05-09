@@ -1,4 +1,6 @@
 # IRC-client
+#### Technologies: Python, Tkinter
+
 Internet Relay Chat (IRC) is an application layer protocol that facilitates communication in the form of text. 
 The chat process works on a client/server networking model. 
 IRC clients are computer programs that users can install on their system or web based applications 
@@ -11,9 +13,10 @@ These clients communicate with chat servers to transfer messages to other client
 
 ## Index
 * [Installation](#Install)
-* [Usage](#Usage)
-* [Screen Shots](#Shots)
 * [Prerequisites](#Prerequisites)
+* [Usage](#Usage)
+* [Unit Tests](#Running the tests)
+* [Screen Shots](#Shots)
 
 ## <a name="Install">Installation</a>
 * To clone the repo
@@ -38,5 +41,9 @@ When the second window pops up enter the message and hit enter to send, click le
 ## Running the tests
 ```shell
 $ python test_irc_client.py
+
 ```
+
+## <a name="Shots">Screen Shots</a>
+
 
