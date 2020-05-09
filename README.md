@@ -30,7 +30,7 @@ $ cd IRC-client
 $ pip install tkinter
 ```
 
-## <a name="Usage">Useage</a>
+## <a name="Usage">Usage</a>
 ```shell
 $ python irc_client.py
 ```
