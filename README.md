@@ -11,7 +11,7 @@ These clients communicate with chat servers to transfer messages to other client
 
 ## Index
 * [Installation](#Install)
-* * [Usage](#Usage)
+* [Usage](#Usage)
 * [Screen Shots](#Shots)
 
 ## <a name="Install">Installation</a>
@@ -21,12 +21,12 @@ $ git clone git@github.com:VaporFoxLash/IRC-client.git
 $ cd IRC-client
  ```
 
-## Prerequisites
+## <a name="Prerequisites">Prerequisites<a/>
 ```shell
 $ pip install tkinter
 ```
 
-## Ussage:
+## <a name="Usage">Useage</a>
 ```shell
 $ python irc_client.py
 ```
@@ -34,7 +34,8 @@ $ python irc_client.py
 Enter your username and channel you want to join in freenode server.
 When the second window pops up enter the message and hit enter to send, click leave channel to exit the channel.
 
-# Running the tests
+## Running the tests
 ```shell
-$ python -m test_irc_client.py
+$ python test_irc_client.py
 ```
+
