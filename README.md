@@ -38,13 +38,12 @@ $ python irc_client.py
 Enter your username and channel you want to join in freenode server.
 When the second window pops up enter the message and hit enter to send, click leave channel to exit the channel.
 
-## Testing
-* Running the tests
+## <a name="Testing">Running the tests</a>
 ```shell
 $ python test_irc_client.py
 
 ```
 
 ## <a name="Shots">Screen Shots</a>
-
+![](https://raw.githubusercontent.com/VaporFoxLash/IRC-client/master/img/Screenshot0.png)
 
