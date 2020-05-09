@@ -15,7 +15,7 @@ These clients communicate with chat servers to transfer messages to other client
 * [Installation](#Install)
 * [Prerequisites](#Prerequisites)
 * [Usage](#Usage)
-* [Unit Tests](#Running the tests)
+* [Unit Tests](#Testing)
 * [Screen Shots](#Shots)
 
 ## <a name="Install">Installation</a>
@@ -38,7 +38,8 @@ $ python irc_client.py
 Enter your username and channel you want to join in freenode server.
 When the second window pops up enter the message and hit enter to send, click leave channel to exit the channel.
 
-## Running the tests
+## Testing
+* Running the tests
 ```shell
 $ python test_irc_client.py
 
