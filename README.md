@@ -17,7 +17,6 @@ These clients communicate with chat servers to transfer messages to other client
 * [Usage](#Usage)
 * [Unit Tests](#Testing)
 * [Screen Shots](#Shots)
-* [References](#References)
 
 ## <a name="Install">Installation</a>
 * To clone the repo
@@ -48,10 +47,3 @@ $ python test_irc_client.py
 ## <a name="Shots">Screen Shots</a>
 ![](https://raw.githubusercontent.com/VaporFoxLash/IRC-client/master/img/Screenshot0.png)
 
-
-## <a name="References">References</a>
-* Wikipedia
-https://en.wikipedia.org/wiki/Internet_Relay_Chat
-
-* RFC 1459 (Internet Relay Chat Protocol)                                             
-https://tools.ietf.org/html/rfc1459
